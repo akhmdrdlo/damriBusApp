@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DAMRIku - Tentang DAMRI Group & Pesan Tiket</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+  :root {
+    --color-primary: #001F3F;
+    --color-primary-light: #003366;
+    --color-text-primary: #111827;
+    --color-text-secondary: #6b7280;
+    --color-bg: #ffffff;
+    --color-accent: #254E70;
+    --radius: 12px;
+    --shadow: 0 4px 12px rgba(0,0,0,0.1);
+    --spacing-base: 16px;
+    --font-family: 'Inter', sans-serif;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-family);
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+
+  a:hover,
+  a:focus {
+    color: var(--color-primary-light);
+    outline: none;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  header {
+    background: var(--color-bg);
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px var(--spacing-base);
+  }
+
+  .logo {
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--color-primary);
+    letter-spacing: 0.05em;
+    user-select: none;
+  }
+
+  nav {
+    display: flex;
+    gap: var(--spacing-base);
+  }
+
+  nav a {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  nav a:hover,
+  nav a:focus {
+    background-color: var(--color-primary-light);
+    color: #fff;
+  }
+
+  main {
+    flex: 1 0 auto;
+    padding: 60px 0 80px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: var(--color-primary);
+    line-height: 1.1;
+  }
+
+  .hero p {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-message {
+    margin-top: 32px;
+    font-size: 1.125rem;
+    color: var(--color-primary-light);
+    font-weight: 600;
+  }
+
+  /* Button to bus list */
+  .btn-link {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 14px 32px;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: white;
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+
+  .btn-link:hover,
+  .btn-link:focus {
+    background-color: var(--color-primary-light);
+    outline: none;
+  }
+
+  footer {
+    background: var(--color-bg);
+    border-top: 1px solid #e5e7eb;
+    padding: 24px 0;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    main {
+      padding: 40px 10px 60px;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+    }
+    .btn-link {
+      width: 100%;
+      max-width: 320px;
+      padding: 16px;
+      font-size: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="container header-inner" role="banner">
+    <div class="logo" tabindex="0">DAMRIku</div>
+    <nav role="navigation" aria-label="Primary navigation">
+      <a href="{{ url_for('index') }}" tabindex="0" aria-current="page">Beranda</a>
+      <a href="{{ url_for('list_bis') }}" tabindex="0">Daftar Bis</a>
+      <a href="{{ url_for('form_tiket') }}" tabindex="0">Pesan Tiket</a>
+      <a href="{{ url_for('measurement_results') }}" tabindex="0">Hasil Pengukuran</a>
+    </nav>
+  </div>
+</header>
+
+<main role="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <h1 id="hero-title">Selamat datang di DAMRIku</h1>
+    <p>DAMRI Group adalah perusahaan BUMN yang bergerak di bidang angkutan penumpang dengan layanan bus dalam negeri yang handal dan terpercaya.</p>
+    <p>Kami hadir untuk melayani kebutuhan transportasi Anda dengan nyaman, aman, dan tepat waktu.</p>
+    <p class="cta-message" id="tiket">Pesan tiket bus DAMRI Anda dengan mudah melalui aplikasi ini.</p>
+    <a href="form_tiket.html" class="btn-link" aria-label="Lihat Daftar Bis dan Pesan Tiket">Lihat Daftar Bis & Pesan Tiket</a>
+  </section>
+</main>
+
+<footer role="contentinfo">
+  <div class="container">
+    &copy; 2024 DAMRIku. Semua hak cipta dilindungi.
+  </div>
+</footer>
+</body>
+</html>
+

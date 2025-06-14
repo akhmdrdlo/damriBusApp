@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DAMRIku - Formulir Pemesanan Tiket</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+  :root {
+    --color-primary: #001F3F;
+    --color-primary-light: #003366;
+    --color-text-primary: #111827;
+    --color-text-secondary: #6b7280;
+    --color-bg: #ffffff;
+    --color-accent: #254E70;
+    --radius: 12px;
+    --shadow: 0 4px 12px rgba(0,0,0,0.1);
+    --spacing-base: 16px;
+    --font-family: 'Inter', sans-serif;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-family);
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+
+  a:hover,
+  a:focus {
+    color: var(--color-primary-light);
+    outline: none;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 1200px; /* Pertahankan lebar maksimum yang lebih luas */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 var(--spacing-base); /* Tambahkan padding horizontal ke container utama */
+  }
+
+  main {
+    flex: 1 0 auto;
+    padding: 60px 0 80px; /* Padding vertikal untuk main */
+  }
+
+  h2 {
+    color: var(--color-primary);
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .table-card {
+    background: #f9fafb;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px; /* Pastikan padding cukup di dalam card */
+    max-width: 100%; /* Pastikan card tidak melebihi lebar induk */
+    overflow-x: auto; /* Ini penting agar tabel bisa discroll horizontal jika terlalu lebar */
+    margin: 0 auto;
+    /* max-width: 900px; */ /* Hapus atau sesuaikan jika ingin lebih lebar */
+  }
+
+  table {
+    width: 100%; /* Tabel mengisi 100% dari .table-card */
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 700px; /* Tambahkan min-width agar kolom tidak terlalu sempit pada lebar tertentu */
+  }
+
+  thead {
+    background-color: var(--color-primary);
+    color: white;
+  }
+
+  th, td {
+    padding: 16px 20px; /* Sesuaikan padding sel agar tidak terlalu padat */
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap; /* Mencegah teks mematah ke baris baru, biarkan overflow-x yang menangani */
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px var(--spacing-base);
+  }
+
+  .logo {
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--color-primary);
+    letter-spacing: 0.05em;
+    user-select: none;
+  }
+
+  nav {
+    display: flex;
+    gap: var(--spacing-base);
+  }
+
+  nav a {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  nav a:hover,
+  nav a:focus {
+    background-color: var(--color-primary-light);
+    color: #fff;
+  }
+
+  h2 {
+    color: var(--color-primary);
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  form {
+    background: #f9fafb;
+    padding: 24px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+    color: var(--color-text-primary);
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  select,
+  input[type="date"],
+  input[type="time"] {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus,
+  select:focus,
+  input[type="date"]:focus,
+  input[type="time"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 4px var(--color-primary-light);
+  }
+
+  button[type="submit"] {
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px 0;
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+
+  button[type="submit"]:hover,
+  button[type="submit"]:focus {
+    background-color: var(--color-primary-light);
+    outline: none;
+  }
+
+  /* Back button */
+  .btn-back {
+    display: inline-block;
+    margin-bottom: 32px;
+    padding: 12px 28px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius);
+    background-color: transparent;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .btn-back:hover,
+  .btn-back:focus {
+    background-color: var(--color-primary);
+    color: white;
+    outline: none;
+  }
+
+  /* Success message area */
+  .success-message {
+    background-color: #d1fae5;
+    color: #065f46;
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    font-weight: 700;
+    text-align: center;
+  }
+
+    @media (max-width: 768px) {
+    .container {
+      padding: 0 var(--spacing-base); /* Tetap gunakan padding horizontal pada layar kecil */
+    }
+    main {
+      padding: 40px 0 60px; /* Sesuaikan padding main */
+    }
+    .table-card {
+      padding: 16px; /* Kurangi padding card pada layar kecil */
+    }
+    table {
+      min-width: 600px; /* Pertahankan min-width atau sesuaikan lebih lanjut */
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 12px 14px; /* Kurangi padding sel pada layar kecil */
+    }
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      padding: 40px 16px 60px;
+    }
+    button[type="submit"] {
+      font-size: 1rem;
+    }
+  }
+
+  
+</style>
+</head>
+<body>
+<header>
+  <div class="container header-inner" role="banner">
+    <div class="logo" tabindex="0">DAMRIku</div>
+    <nav role="navigation" aria-label="Primary navigation">
+      <a href="{{ url_for('index') }}" tabindex="0">Beranda</a>
+      <a href="{{ url_for('list_bis') }}" tabindex="0">Daftar Bis</a>
+      <a href="{{ url_for('form_tiket') }}" tabindex="0" aria-current="page">Pesan Tiket</a>
+      <a href="{{ url_for('measurement_results') }}" tabindex="0">Hasil Pengukuran</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container" role="main">
+  <button class="btn-back" aria-label="Kembali ke beranda"><a href="{{ url_for('index') }}">← Kembali ke Beranda</a></button>
+  <h2>Formulir Pemesanan Tiket Bus DAMRI</h2>
+  <form id="ticketForm" novalidate aria-describedby="formDesc">
+    <p id="formDesc" class="sr-only">Isilah formulir berikut dengan lengkap untuk memesan tiket bus DAMRI</p>
+
+    <div>
+      <label for="namaLengkap">Nama Lengkap</label>
+      <input type="text" id="namaLengkap" name="namaLengkap" placeholder="Masukkan nama lengkap Anda" required aria-required="true" />
+    </div>
+
+    <div>
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="contoh@domain.com" required aria-required="true" />
+    </div>
+
+    <div>
+      <label for="bus">Pilih Rute Bis</label>
+      <select id="bus" name="bus" required aria-required="true" aria-describedby="busHelp">
+        <option value="" disabled selected>Pilih rute bis</option>
+      </select>
+      <small id="busHelp" style="color: var(--color-text-secondary); font-size: 0.875rem;">Pilih rute bis yang sesuai dari daftar.</small>
+    </div>
+
+    <div>
+      <label for="seatBooked">Nomor Kursi Dipesan</label>
+      <input type="text" id="seatBooked" name="seatBooked" placeholder="Contoh: A1, B2 (pisahkan dengan koma)" required aria-required="true" />
+    </div>
+
+    <div>
+      <label for="tanggalBerangkat">Tanggal Keberangkatan</label>
+      <input type="date" id="tanggalBerangkat" name="tanggalBerangkat" required aria-required="true" />
+    </div>
+
+    <div style="font-weight: 600;">Total Pembayaran: <span id="displayTotalPayment">Rp 0</span></div>
+
+    <button type="submit" aria-label="Kirim data pemesanan tiket">Pesan Tiket</button>
+  </form>
+
+  <div id="successMessage" class="success-message" role="alert" style="display:none; margin-top: 24px;"></div>
+
+  <div id="measurementResults" style="display:none; margin-top: 30px; padding: 20px; background-color: #e0f2fe; border-radius: var(--radius);">
+    <h3>Hasil Pengukuran Kecepatan Penyimpanan</h3>
+    <p><strong>Latency Firestore:</strong> <span id="latencyFirestore"></span></p>
+    <p><strong>Latency Lokal (JSON):</strong> <span id="latencyLocal"></span></p>
+    <p style="font-size: 0.9em; color: var(--color-text-secondary);">
+      *Latency diukur dari sisi server Flask hingga konfirmasi penyimpanan berhasil. Semakin kecil nilainya, semakin cepat.
+      <br>
+      **Throughput (transaksi per detik) akan bervariasi tergantung pada beban server dan jaringan, dan diukur dengan menjalankan banyak pemesanan secara bersamaan.
+    </p>
+    <p style="text-align: center; margin-top: 15px;">
+      Lihat <a href="{{ url_for('measurement_results') }}" style="color: var(--color-primary); text-decoration: underline; font-weight: 600;">Grafik Latency Perbandingan</a> untuk melihat historis performa.
+    </p>
+  </div>
+</main>
+
+<footer role="contentinfo">
+  <div class="container">
+    &copy; 2024 DAMRIku. Semua hak cipta dilindungi.
+  </div>
+</footer>
+
+<script>
+  let busData = []; // Untuk menyimpan data bus yang diambil dari backend
+
+  async function populateBusSelect() {
+    const select = document.getElementById('bus');
+    while (select.options.length > 1) {
+        select.remove(1);
+    }
+
+    try {
+      const response = await fetch('/api/bus_routes');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      busData = await response.json(); // Simpan data bus ke variabel global
+      
+      busData.forEach(bus => {
+        const option = document.createElement('option');
+        option.value = bus.id;
+        option.textContent = `${bus.jurusan} (ID: ${bus.id}) - Rp ${bus.harga.toLocaleString('id-ID')}`;
+        select.appendChild(option);
+      });
+      // Panggil update display payment saat pertama kali data bus dimuat
+      updateTotalPayment();
+    } catch (error) {
+      console.error("Gagal memuat data bus:", error);
+      const option = document.createElement('option');
+      option.value = "";
+      option.textContent = "Gagal memuat daftar bis";
+      option.disabled = true;
+      select.appendChild(option);
+    }
+  }
+
+  function updateTotalPayment() {
+    const busSelect = document.getElementById('bus');
+    const seatBookedInput = document.getElementById('seatBooked');
+    const displayTotalPayment = document.getElementById('displayTotalPayment');
+
+    const selectedBusId = busSelect.value;
+    const seats = seatBookedInput.value.split(',').filter(s => s.trim() !== '');
+    const numberOfSeats = seats.length;
+
+    let totalPayment = 0;
+    if (selectedBusId && numberOfSeats > 0) {
+        const selectedBus = busData.find(bus => String(bus.id) === String(selectedBusId));
+        if (selectedBus && selectedBus.harga) {
+            totalPayment = selectedBus.harga * numberOfSeats;
+        }
+    }
+    displayTotalPayment.textContent = `Rp ${totalPayment.toLocaleString('id-ID')}`;
+    return totalPayment; // Mengembalikan total payment yang dihitung
+  }
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    populateBusSelect();
+
+    const form = document.getElementById('ticketForm');
+    const successMessage = document.getElementById('successMessage');
+    const measurementResults = document.getElementById('measurementResults');
+    const latencyFirestoreSpan = document.getElementById('latencyFirestore');
+    const latencyLocalSpan = document.getElementById('latencyLocal');
+
+    const busSelect = document.getElementById('bus');
+    const seatBookedInput = document.getElementById('seatBooked');
+
+    // Tambahkan event listener untuk update total payment
+    busSelect.addEventListener('change', updateTotalPayment);
+    seatBookedInput.addEventListener('input', updateTotalPayment);
+
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      successMessage.style.display = 'none';
+      measurementResults.style.display = 'none';
+
+      if(!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const totalPayment = updateTotalPayment(); // Hitung total payment final
+
+      const data = {
+        namaLengkap: form.namaLengkap.value.trim(),
+        email: form.email.value.trim(),
+        // telepon: form.telepon.value.trim(), // Dihapus
+        bus_id: form.bus.value, // Ubah nama field agar sesuai skema database
+        seat_booked: form.seatBooked.value.trim(), // Tambahkan field seat_booked
+        total_payment: totalPayment, // Tambahkan field total_payment
+        booking_time: new Date().toISOString(), // Timestamp booking dari frontend
+        tanggalBerangkat: form.tanggalBerangkat.value
+      };
+
+      // Validasi tambahan untuk seat_booked dan total_payment
+      if (!data.seat_booked) {
+          alert("Nomor Kursi Dipesan wajib diisi.");
+          return;
+      }
+      if (data.total_payment <= 0) {
+          alert("Pilih rute bis dan masukkan nomor kursi yang valid untuk menghitung pembayaran.");
+          return;
+      }
+
+      try {
+        const response = await fetch('/api/book_ticket', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          successMessage.textContent = `Terima kasih, ${data.namaLengkap}! Tiket bis ID ${data.bus_id} (${data.seat_booked}) untuk tanggal ${data.tanggalBerangkat} berhasil dipesan dengan total pembayaran Rp ${data.total_payment.toLocaleString('id-ID')}.`;
+          successMessage.textContent += ` Kami akan mengirimkan detail lebih lanjut ke email ${data.email}.`;
+          successMessage.style.display = 'block';
+
+          if (result.latency_firestore_ms !== undefined && result.latency_firestore_ms !== null) {
+              latencyFirestoreSpan.textContent = result.latency_firestore_ms.toFixed(2) + " ms";
+          } else {
+              latencyFirestoreSpan.textContent = "Gagal / N/A";
+          }
+
+          if (result.latency_local_ms !== undefined && result.latency_local_ms !== null) {
+              latencyLocalSpan.textContent = result.latency_local_ms.toFixed(2) + " ms";
+          } else {
+              latencyLocalSpan.textContent = "Gagal / N/A";
+          }
+          measurementResults.style.display = 'block';
+
+          form.reset();
+          form.bus.selectedIndex = 0; // Reset dropdown
+          updateTotalPayment(); // Reset tampilan total payment
+          form.namaLengkap.focus();
+        } else {
+          successMessage.textContent = `Pemesanan gagal: ${result.message || 'Terjadi kesalahan.'}`;
+          successMessage.style.backgroundColor = '#fee2e2';
+          successMessage.style.color = '#991b1b';
+          successMessage.style.display = 'block';
+          measurementResults.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error saat mengirimkan data:', error);
+        successMessage.textContent = 'Terjadi kesalahan koneksi saat memesan tiket. Silakan coba lagi.';
+        successMessage.style.backgroundColor = '#fee2e2';
+        successMessage.style.color = '#991b1b';
+        successMessage.style.display = 'block';
+        measurementResults.style.display = 'none';
+      }
+    });
+  });
+</script>
+</body>
+</html>
+

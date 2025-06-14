@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DAMRIku - Daftar Bis</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+  :root {
+    --color-primary: #001F3F;
+    --color-primary-light: #003366;
+    --color-text-primary: #111827;
+    --color-text-secondary: #6b7280;
+    --color-bg: #ffffff;
+    --color-accent: #254E70;
+    --radius: 12px;
+    --shadow: 0 4px 12px rgba(0,0,0,0.1);
+    --spacing-base: 16px;
+    --font-family: 'Inter', sans-serif;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-family);
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+
+  a:hover,
+  a:focus {
+    color: var(--color-primary-light);
+    outline: none;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  header {
+    background: var(--color-bg);
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px var(--spacing-base);
+  }
+
+  .logo {
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--color-primary);
+    letter-spacing: 0.05em;
+    user-select: none;
+  }
+
+  nav {
+    display: flex;
+    gap: var(--spacing-base);
+  }
+
+  nav a {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  nav a:hover,
+  nav a:focus {
+    background-color: var(--color-primary-light);
+    color: #fff;
+  }
+
+  main {
+    flex: 1 0 auto;
+    padding: 60px 0 80px;
+  }
+
+  h2 {
+    color: var(--color-primary);
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .table-card {
+    background: #f9fafb;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 0 auto;
+    max-width: 900px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 600px;
+  }
+
+  thead {
+    background-color: var(--color-primary);
+    color: white;
+  }
+
+  th, td {
+    padding: 16px 24px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+
+  tbody td {
+    font-weight: 400;
+    color: var(--color-text-primary);
+  }
+
+  tbody tr:hover {
+    background-color: var(--color-primary-light);
+    color: white;
+    cursor: default;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Back button */
+  .btn-back {
+    display: inline-block;
+    margin: 0 0 40px 0;
+    padding: 12px 28px;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius);
+    background-color: transparent;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .btn-back:hover,
+  .btn-back:focus {
+    background-color: var(--color-primary);
+    color: white;
+    outline: none;
+  }
+
+  footer {
+    background: var(--color-bg);
+    border-top: 1px solid #e5e7eb;
+    padding: 24px 0;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    main {
+      padding: 40px 10px 60px;
+    }
+    table {
+      min-width: unset;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 12px 16px;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="container header-inner" role="banner">
+    <div class="logo" tabindex="0">DAMRIku</div>
+    <nav role="navigation" aria-label="Primary navigation">
+      <a href="{{ url_for('index') }}" tabindex="0">Beranda</a>
+      <a href="{{ url_for('list_bis') }}" tabindex="0" aria-current="page">Daftar Bis</a>
+      <a href="{{ url_for('form_tiket') }}" tabindex="0">Pesan Tiket</a>
+      <a href="{{ url_for('measurement_results') }}" tabindex="0">Hasil Pengukuran</a>
+    </nav>
+  </div>
+</header>
+
+<main role="main" class="container">
+  <button class="btn-back" aria-label="Kembali ke beranda"><a href="{{ url_for('index') }}">← Kembali ke Beranda</a></button>
+  <h2>Daftar Bis DAMRI</h2>
+  <div class="table-card" role="region" aria-live="polite" aria-relevant="additions removals">
+    <table aria-describedby="table-desc">
+      <caption id="table-desc" class="sr-only">Tabel berisi data bis DAMRI yang tersedia termasuk nomor bis, rute, jam keberangkatan, dan status</caption>
+      <thead>
+        <tr>
+          <th scope="col">Nomor Bis (ID)</th>
+          <th scope="col">Rute</th>
+          <th scope="col">Harga</th>
+          <th scope="col">Status (Asumsi)</th>
+        </tr>
+      </thead>
+      <tbody id="bus-table-body">
+        </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+  async function populateBusTable() {
+    const tbody = document.getElementById('bus-table-body');
+    tbody.innerHTML = '';
+
+    try {
+      const response = await fetch('/api/bus_routes');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const busData = await response.json();
+
+      busData.forEach(bus => {
+        const tr = document.createElement('tr');
+
+        const tdNomor = document.createElement('td');
+        tdNomor.textContent = bus.id;
+        tr.appendChild(tdNomor);
+
+        const tdRute = document.createElement('td');
+        tdRute.textContent = bus.jurusan;
+        tr.appendChild(tdRute);
+
+        const tdHarga = document.createElement('td');
+        tdHarga.textContent = `Rp ${bus.harga.toLocaleString('id-ID')}`;
+        tr.appendChild(tdHarga);
+
+        const tdStatus = document.createElement('td');
+        tdStatus.textContent = "Tersedia"; // Asumsi default berdasarkan data rute-bis.json
+        tdStatus.style.color = '#16a34a';
+        tdStatus.style.fontWeight = '700';
+        tr.appendChild(tdStatus);
+
+        tbody.appendChild(tr);
+      });
+    } catch (error) {
+      console.error("Gagal memuat data bus:", error);
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 4;
+      td.textContent = "Gagal memuat daftar bis. Silakan coba lagi nanti.";
+      td.style.textAlign = "center";
+      td.style.color = "red";
+      tbody.appendChild(tr);
+      tr.appendChild(td);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    populateBusTable();
+  });
+</script>
+</body>
+</html>
+

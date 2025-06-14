@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DAMRIku - Hasil Pengukuran</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    :root {
+      --color-primary: #001F3F;
+      --color-primary-light: #003366;
+      --color-text-primary: #111827;
+      --color-text-secondary: #6b7280;
+      --color-bg: #ffffff;
+      --color-accent: #254E70;
+      --radius: 12px;
+      --shadow: 0 4px 12px rgba(0,0,0,0.1);
+      --spacing-base: 16px;
+      --font-family: 'Inter', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-family);
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    a:hover, a:focus {
+      color: var(--color-primary-light);
+      outline: none;
+    }
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 60px;
+      padding-bottom: 80px;
+      flex: 1 0 auto;
+    }
+    header {
+      background: var(--color-bg);
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px var(--spacing-base);
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.75rem;
+      color: var(--color-primary);
+      letter-spacing: 0.05em;
+      user-select: none;
+    }
+    nav {
+      display: flex;
+      gap: var(--spacing-base);
+    }
+    nav a {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    nav a:hover, nav a:focus {
+      background-color: var(--color-primary-light);
+      color: #fff;
+    }
+    h2 {
+      color: var(--color-primary);
+      font-weight: 700;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .info-card {
+      background: #f9fafb;
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin: 30px auto;
+      text-align: left;
+    }
+    .info-card h3 {
+      color: var(--color-accent);
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+    .info-card p { margin-bottom: 8px; }
+    .btn-back {
+      display: inline-block;
+      margin-bottom: 32px;
+      padding: 12px 28px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+      border-radius: var(--radius);
+      background-color: transparent;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .btn-back:hover, .btn-back:focus {
+      background-color: var(--color-primary);
+      color: white;
+      outline: none;
+    }
+    #latencyChartContainer, #testLatencyChartContainer {
+      width: 100%;
+      max-width: 1000px;
+      margin: 30px auto;
+      height: 400px;
+    }
+    .test-form {
+      display: flex;
+      gap: 15px;
+      align-items: flex-end;
+      margin-bottom: 20px;
+    }
+    .test-form label {
+      font-weight: 600;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .test-form input[type="number"] {
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 100px;
+    }
+    .test-form button {
+      background-color: var(--color-accent);
+      color: white;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .test-form button:hover {
+      background-color: #1a3c57;
+    }
+    #testResults {
+      background-color: #e0f2fe;
+      padding: 15px;
+      border-radius: var(--radius);
+      margin-top: 20px;
+      display: none;
+    }
+    #testResults h4 {
+      margin-top: 0;
+      color: var(--color-primary);
+    }
+    footer {
+      background: var(--color-bg);
+      border-top: 1px solid #e5e7eb;
+      padding: 24px 0;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+    }
+    @media (max-width: 768px) {
+      .container { padding: 40px 16px 60px; }
+      #latencyChartContainer, #testLatencyChartContainer { padding: 0 10px; }
+      .test-form { flex-direction: column; align-items: stretch; }
+      .test-form input[type="number"] { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-inner" role="banner">
+      <div class="logo" tabindex="0">DAMRIku</div>
+      <nav role="navigation" aria-label="Primary navigation">
+        <a href="{{ url_for('index') }}" tabindex="0">Beranda</a>
+        <a href="{{ url_for('list_bis') }}" tabindex="0">Daftar Bis</a>
+        <a href="{{ url_for('form_tiket') }}" tabindex="0">Pesan Tiket</a>
+        <a href="{{ url_for('measurement_results') }}" tabindex="0" aria-current="page">Hasil Pengukuran</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container" role="main">
+    <button class="btn-back" aria-label="Kembali ke beranda">
+      <a href="{{ url_for('index') }}">← Kembali ke Beranda</a>
+    </button>
+    <h2>Hasil Pengukuran Performa</h2>
+    <div class="info-card">
+      <h3>Uji Performa Penyimpanan Data</h3>
+      <p>Jalankan uji coba untuk mengukur rata-rata latency dan throughput dari sejumlah operasi penyimpanan data.</p>
+      <form id="performanceTestForm" class="test-form">
+        <div>
+          <label for="iterations">Jumlah Iterasi:</label>
+          <input type="number" id="iterations" name="iterations" value="10" min="1" required />
+        </div>
+        <button type="submit">Jalankan Tes</button>
+      </form>
+      <div id="testResults">
+        <h4>Hasil Tes Performa Terbaru:</h4>
+        <p><strong>Jumlah Iterasi:</strong> <span id="testIterations"></span></p>
+        <p><strong>Total Waktu Tes:</strong> <span id="testTotalTime"></span> detik</p>
+        <p><strong>Rata-rata Latency Firestore:</strong> <span id="testAvgFirestoreLatency"></span> ms</p>
+        <p><strong>Rata-rata Latency Lokal:</strong> <span id="testAvgLocalLatency"></span> ms</p>
+        <p><strong>Throughput Firestore:</strong> <span id="testFirestoreThroughput"></span> ops/detik</p>
+        <p><strong>Throughput Lokal:</strong> <span id="testLocalThroughput"></span> ops/detik</p>
+        <p style="font-size: 0.85em; color: var(--color-text-secondary); margin-top: 10px;">
+          *Throughput mengindikasikan berapa banyak operasi penyimpanan yang dapat diselesaikan per detik. Semakin tinggi nilainya, semakin baik.
+        </p>
+      </div>
+    </div>
+    <div class="info-card" id="testLatencyChartCard" style="display: none;">
+      <h3>Grafik Latency Per Iterasi Tes</h3>
+      <div id="testLatencyChartContainer">
+        <canvas id="testLatencyChart"></canvas>
+      </div>
+      <p style="font-size: 0.9em; color: var(--color-text-secondary); text-align: center;">
+        Grafik ini menunjukkan latency dari setiap operasi penyimpanan individu selama tes performa.
+      </p>
+    </div>
+        <div class="info-card">
+      <h3>Statistik Latency Pemesanan Tunggal</h3>
+      <div id="singleBookingStats">
+        <h4>Firestore:</h4>
+        <p>Rata-rata: <span id="avgSingleFirestoreLatency">N/A</span> ms</p>
+        <p>Min: <span id="minSingleFirestoreLatency">N/A</span> ms</p>
+        <p>Max: <span id="maxSingleFirestoreLatency">N/A</span> ms</p>
+        
+        <h4>Lokal (JSON):</h4>
+        <p>Rata-rata: <span id="avgSingleLocalLatency">N/A</span> ms</p>
+        <p>Min: <span id="minSingleLocalLatency">N/A</span> ms</p>
+        <p>Max: <span id="maxSingleLocalLatency">N/A</span> ms</p>
+        <p style="font-size: 0.85em; color: var(--color-text-secondary); margin-top: 10px;">
+          *Statistik ini dihitung dari semua data pemesanan tunggal yang tercatat.
+        </p>
+      </div>
+    </div>
+    <div class="info-card">
+      <h3>Grafik Latency Perbandingan (Pemesanan Tunggal)</h3>
+    <div id="latencyChartContainer">
+      <canvas id="latencyChart"></canvas>
+    </div>
+      <p style="font-size: 0.9em; color: var(--color-text-secondary); text-align: center;">Grafik ini menunjukkan latency (waktu respons) untuk setiap pemesanan tiket tunggal yang dilakukan melalui formulir.</p>
+    </div>
+    <div class="info-card">
+      <h3>Pentingnya Pengukuran</h3>
+      <p>Pengukuran ini membantu membandingkan kecepatan operasi penyimpanan data di dua lokasi berbeda:</p>
+      <ul>
+        <li><strong>Firestore (Cloud Database):</strong> Penyimpanan data di layanan cloud yang terdistribusi dan skalabel.</li>
+        <li><strong>JSON Lokal (Local File System):</strong> Penyimpanan data langsung ke file di server aplikasi.</li>
+      </ul>
+      <p>Perbedaan waktu ini dapat menunjukkan:</p>
+      <ul>
+        <li><strong>Latency Jaringan:</strong> Waktu yang dibutuhkan data untuk melakukan perjalanan ke dan dari Firestore.</li>
+        <li><strong>Overhead API:</strong> Waktu yang dibutuhkan oleh SDK dan layanan cloud untuk memproses permintaan.</li>
+        <li><strong>Performa I/O Lokal:</strong> Kecepatan membaca/menulis ke disk lokal.</li>
+      </ul>
+      <p>Setiap kali Anda memesan tiket atau menjalankan tes, data pengukuran akan dicatat dan ditambahkan ke log.</p>
+    </div>
+    <div class="info-card">
+      <h3>Definisi Metrik</h3>
+      <p><strong>Latency (Waktu Respons):</strong> Waktu yang dihabiskan dari saat permintaan penyimpanan dimulai di server Flask hingga konfirmasi bahwa data telah berhasil disimpan (baik di Firestore maupun lokal). Diukur dalam milidetik (ms).</p>
+      <p><strong>Throughput:</strong> Jumlah transaksi (operasi) yang dapat diproses per satuan waktu. Dalam tes ini, kita mengukur operasi penyimpanan per detik. Semakin tinggi throughput, semakin efisien sistem dalam menangani banyak permintaan.</p>
+    </div>
+  </main>
+  <footer role="contentinfo">
+    <div class="container">
+      &copy; 2024 DAMRIku. Semua hak cipta dilindungi.
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    let myLatencyChart;
+    let myTestLatencyChart;
+
+  // Fungsi untuk merender grafik pemesanan tunggal (single booking) dan menampilkan statistik
+  async function fetchAndRenderChart() {
+    try {
+      const response = await fetch('/api/get_measurements');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const allData = await response.json();
+      
+      // Filter hanya data pemesanan tunggal (single_booking)
+      const singleBookingData = allData.filter(item => item.type === 'single_booking');
+
+      // Urutkan data berdasarkan timestamp_booking untuk grafik yang benar
+      singleBookingData.sort((a, b) => (a.timestamp_booking || 0) - (b.timestamp_booking || 0));
+
+      const labels = singleBookingData.map((item, index) => {
+        const date = new Date((item.timestamp_booking || 0) * 1000);
+        return `Pemesanan ${index + 1} (${date.toLocaleTimeString('id-ID')})`;
+      });
+      const firestoreLatencies = singleBookingData.map(item => item.latency_firestore_ms !== -1 ? item.latency_firestore_ms : NaN);
+      const localLatencies = singleBookingData.map(item => item.latency_local_ms !== -1 ? item.latency_local_ms : NaN);
+
+      const ctx = document.getElementById('latencyChart').getContext('2d');
+
+      if (myLatencyChart) { // Destroy previous chart instance
+        myLatencyChart.destroy();
+      }
+
+      myLatencyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Latency Firestore (ms)',
+              data: firestoreLatencies,
+              borderColor: 'rgb(0, 31, 63)',
+              backgroundColor: 'rgba(0, 31, 63, 0.2)',
+              fill: false,
+              tension: 0.1
+            },
+            {
+              label: 'Latency Lokal (ms)',
+              data: localLatencies,
+              borderColor: 'rgb(37, 78, 112)',
+              backgroundColor: 'rgba(37, 78, 112, 0.2)',
+              fill: false,
+              tension: 0.1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Latency (ms)'
+              }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Pemesanan Tiket'
+                }
+            }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  if (isNaN(context.raw)) return context.dataset.label + ': Gagal / N/A';
+                  return context.dataset.label + ': ' + context.raw.toFixed(2) + ' ms';
+                }
+              }
+            },
+            legend: {
+                display: true
+            },
+            title: {
+                display: true,
+                text: 'Perbandingan Latency Firestore vs. Lokal'
+            }
+          }
+        }
+      });
+
+      // --- NEW: Hitung dan Tampilkan Statistik Pemesanan Tunggal ---
+      const validFirestoreLatenciesSingle = firestoreLatencies.filter(l => !isNaN(l));
+      const validLocalLatenciesSingle = localLatencies.filter(l => !isNaN(l));
+
+      const avgSingleFirestoreLatency = validFirestoreLatenciesSingle.length > 0 ? (validFirestoreLatenciesSingle.reduce((sum, val) => sum + val, 0) / validFirestoreLatenciesSingle.length).toFixed(2) : 'N/A';
+      const minSingleFirestoreLatency = validFirestoreLatenciesSingle.length > 0 ? Math.min(...validFirestoreLatenciesSingle).toFixed(2) : 'N/A';
+      const maxSingleFirestoreLatency = validFirestoreLatenciesSingle.length > 0 ? Math.max(...validFirestoreLatenciesSingle).toFixed(2) : 'N/A';
+
+      const avgSingleLocalLatency = validLocalLatenciesSingle.length > 0 ? (validLocalLatenciesSingle.reduce((sum, val) => sum + val, 0) / validLocalLatenciesSingle.length).toFixed(2) : 'N/A';
+      const minSingleLocalLatency = validLocalLatenciesSingle.length > 0 ? Math.min(...validLocalLatenciesSingle).toFixed(2) : 'N/A';
+      const maxSingleLocalLatency = validLocalLatenciesSingle.length > 0 ? Math.max(...validLocalLatenciesSingle).toFixed(2) : 'N/A';
+
+      document.getElementById('avgSingleFirestoreLatency').textContent = avgSingleFirestoreLatency;
+      document.getElementById('minSingleFirestoreLatency').textContent = minSingleFirestoreLatency;
+      document.getElementById('maxSingleFirestoreLatency').textContent = maxSingleFirestoreLatency;
+      document.getElementById('avgSingleLocalLatency').textContent = avgSingleLocalLatency;
+      document.getElementById('minSingleLocalLatency').textContent = minSingleLocalLatency;
+      document.getElementById('maxSingleLocalLatency').textContent = maxSingleLocalLatency;
+      // --- END NEW ---
+
+    } catch (error) {
+      console.error('Gagal mengambil atau merender data pengukuran (single booking):', error);
+      const chartContainer = document.getElementById('latencyChartContainer');
+      chartContainer.innerHTML = '<p style="color: red; text-align: center;">Gagal memuat grafik data pemesanan tunggal. Pastikan server berjalan dan ada data.</p>';
+      // Clear stats if error
+      document.getElementById('avgSingleFirestoreLatency').textContent = 'Error';
+      document.getElementById('minSingleFirestoreLatency').textContent = 'Error';
+      document.getElementById('maxSingleFirestoreLatency').textContent = 'Error';
+      document.getElementById('avgSingleLocalLatency').textContent = 'Error';
+      document.getElementById('minSingleLocalLatency').textContent = 'Error';
+      document.getElementById('maxSingleLocalLatency').textContent = 'Error';
+    }
+  }
+
+    function renderTestLatencyChart(firestoreLatencies, localLatencies) {
+      if (!Array.isArray(firestoreLatencies) || !Array.isArray(localLatencies)) {
+        console.error("Data latensi untuk grafik iterasi tes tidak valid (bukan array).", { firestoreLatencies, localLatencies });
+        document.getElementById('testLatencyChartCard').style.display = 'none';
+        return;
+      }
+      const testLatencyChartCard = document.getElementById('testLatencyChartCard');
+      testLatencyChartCard.style.display = 'block';
+      const validFirestoreLatencies = firestoreLatencies.filter(l => l !== -1);
+      const validLocalLatencies = localLatencies.filter(l => l !== -1);
+      if (validFirestoreLatencies.length === 0 && validLocalLatencies.length === 0) {
+        document.getElementById('testLatencyChartCard').style.display = 'none';
+        return;
+      }
+      const allValidLatencies = [...validFirestoreLatencies, ...validLocalLatencies];
+      let minY = allValidLatencies.length > 0 ? Math.min(...allValidLatencies) : 0;
+      let maxY = allValidLatencies.length > 0 ? Math.max(...allValidLatencies) : 100;
+      minY = Math.floor(minY * 0.9);
+      maxY = Math.ceil(maxY * 1.1);
+      if (minY < 0) minY = 0;
+      if (maxY === 0 && allValidLatencies.length > 0) maxY = 10;
+      let stepSize = Math.ceil((maxY - minY) / 10);
+      if (stepSize === 0) stepSize = 1;
+      const labels = Array.from({ length: Math.max(firestoreLatencies.length, localLatencies.length) }, (_, i) => `Iterasi ${i + 1}`);
+      const ctx = document.getElementById('testLatencyChart').getContext('2d');
+      if (myTestLatencyChart) myTestLatencyChart.destroy();
+      myTestLatencyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Latency Firestore (ms)',
+              data: firestoreLatencies.map(l => l !== -1 ? l : NaN),
+              borderColor: 'rgb(255, 99, 132)',
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              fill: false,
+              tension: 0.1
+            },
+            {
+              label: 'Latency Lokal (ms)',
+              data: localLatencies.map(l => l !== -1 ? l : NaN),
+              borderColor: 'rgb(54, 162, 235)',
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              fill: false,
+              tension: 0.1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              min: minY,
+              max: maxY,
+              title: { display: true, text: 'Latency (ms)' },
+              ticks: {
+                stepSize: stepSize,
+                callback: v => v + 'ms'
+              }
+            },
+            x: { title: { display: true, text: 'Nomor Iterasi' } }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: ctx => isNaN(ctx.raw) ? ctx.dataset.label + ': Gagal / N/A' : ctx.dataset.label + ': ' + ctx.raw.toFixed(2) + ' ms'
+              }
+            },
+            legend: { display: true },
+            title: { display: true, text: 'Detail Latency Per Iterasi Tes' }
+          }
+        }
+      });
+    }
+
+    async function runPerformanceTest(iterations) {
+      const testResultsDiv = document.getElementById('testResults');
+      testResultsDiv.style.display = 'block';
+      testResultsDiv.innerHTML = '<h4>Menjalankan Tes Performa...</h4><p style="text-align: center;">Ini mungkin membutuhkan beberapa waktu...</p>';
+      document.getElementById('testLatencyChartCard').style.display = 'none';
+      if (myTestLatencyChart) myTestLatencyChart.destroy();
+      try {
+        const response = await fetch('/api/run_performance_test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ iterations: iterations }),
+        });
+        const result = await response.json();
+        if (response.ok) {
+          const firestoreLatencies = (result.all_firestore_latencies || []).filter(l => l !== -1);
+          const localLatencies = (result.all_local_latencies || []).filter(l => l !== -1);
+          const minFirestoreLatency = firestoreLatencies.length > 0 ? Math.min(...firestoreLatencies).toFixed(2) : "N/A";
+          const maxFirestoreLatency = firestoreLatencies.length > 0 ? Math.max(...firestoreLatencies).toFixed(2) : "N/A";
+          const minLocalLatency = localLatencies.length > 0 ? Math.min(...localLatencies).toFixed(2) : "N/A";
+          const maxLocalLatency = localLatencies.length > 0 ? Math.max(...localLatencies).toFixed(2) : "N/A";
+          testResultsDiv.innerHTML = '<h4>Hasil Tes Performa Terbaru:</h4>';
+          testResultsDiv.innerHTML += `<p><strong>Jumlah Iterasi:</strong> <span id="testIterations">${result.iterations}</span></p>`;
+          testResultsDiv.innerHTML += `<p><strong>Total Waktu Tes:</strong> <span id="testTotalTime">${result.total_duration_seconds.toFixed(2)} detik</span></p>`;
+          testResultsDiv.innerHTML += `<p><strong>Rata-rata Latency Firestore:</strong> <span id="testAvgFirestoreLatency">${result.avg_firestore_latency_ms !== null ? result.avg_firestore_latency_ms.toFixed(2) + " ms" : "N/A"}</span></p>`;
+          testResultsDiv.innerHTML += `<p><strong>Min / Max Latency Firestore:</strong> <span id="testMinMaxFirestoreLatency">${minFirestoreLatency} ms / ${maxFirestoreLatency} ms</span></p>`;
+          testResultsDiv.innerHTML += `<p><strong>Rata-rata Latency Lokal:</strong> <span id="testAvgLocalLatency">${result.avg_local_latency_ms !== null ? result.avg_local_latency_ms.toFixed(2) + " ms" : "N/A"}</span></p>`;
+          testResultsDiv.innerHTML += `<p><strong>Min / Max Latency Lokal:</strong> <span id="testMinMaxLocalLatency">${minLocalLatency} ms / ${maxLocalLatency} ms</span></p>`;
+          testResultsDiv.innerHTML += `<p><strong>Throughput Firestore:</strong> <span id="testFirestoreThroughput">${result.firestore_throughput_ops_per_sec !== null ? result.firestore_throughput_ops_per_sec.toFixed(2) + " ops/detik" : "N/A"}</span></p>`;
+          testResultsDiv.innerHTML += `<p><strong>Throughput Lokal:</strong> <span id="testLocalThroughput">${result.local_throughput_ops_per_sec !== null ? result.local_throughput_ops_per_sec.toFixed(2) + " ops/detik" : "N/A"}</span></p>`;
+          testResultsDiv.innerHTML += `<p style="font-size: 0.85em; color: var(--color-text-secondary); margin-top: 10px;">*Throughput mengindikasikan berapa banyak operasi penyimpanan yang dapat diselesaikan per detik. Semakin tinggi nilainya, semakin baik.</p>`;
+          renderTestLatencyChart(result.all_firestore_latencies || [], result.all_local_latencies || []);
+        } else {
+          testResultsDiv.innerHTML = `<h4>Error Saat Menjalankan Tes:</h4><p style="color: red;">${result.message || 'Terjadi kesalahan.'}</p>`;
+          document.getElementById('testLatencyChartCard').style.display = 'none';
+        }
+        fetchAndRenderChart();
+      } catch (error) {
+        console.error('Error saat menjalankan tes performa:', error);
+        testResultsDiv.innerHTML = `<h4>Error Koneksi:</h4><p style="color: red;">Gagal terhubung ke server untuk menjalankan tes. ${error.message}</p>`;
+        document.getElementById('testLatencyChartCard').style.display = 'none';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchAndRenderChart();
+      const performanceTestForm = document.getElementById('performanceTestForm');
+      performanceTestForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const iterations = document.getElementById('iterations').value;
+        if (iterations && parseInt(iterations) > 0) {
+          runPerformanceTest(parseInt(iterations));
+        } else {
+          alert('Mohon masukkan jumlah iterasi yang valid (angka positif).');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

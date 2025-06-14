@@ -1,0 +1,5 @@
+Flask
+gunicorn
+google.cloud
+google-cloud-firestore
+firebase_admin
